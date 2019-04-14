@@ -2,7 +2,7 @@
 
 ## What is it Vuetify?
 
-A UI component library based on Google Material Design specifically designed for Vue.js to improve UX. It uses CSS classes and Vue components.
+A UI component library based on Google Material Design specifically designed for VueJS to improve UX. It uses CSS classes and VueJS components.
 
 ## Installation
 
