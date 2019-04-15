@@ -11,6 +11,7 @@
           </v-btn>
           <span>Sort by project name</span>
         </v-tooltip>
+
         <v-tooltip top>
           <v-btn small flat color="grey" @click="sortBy('person')" slot="activator">
             <v-icon left small>person</v-icon>
@@ -53,43 +54,12 @@
 </template>
 
 <script>
+import db from '@/firebase';
+
 export default {
   data() {
     return {
-      projects: [
-        {
-          title: "Design a new website",
-          person: "Nelson Mandela",
-          due: "1st Jan 2019",
-          status: "ongoing",
-          lorem:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo, dolorem obcaecati voluptatem tempora expedita praesentium, pariatur doloremque aperiam iusto magnam tempore voluptate quo itaque quis ipsum quam optio, similique nobis?"
-        },
-        {
-          title: "Code up the homepage",
-          person: "Martin Luther King",
-          due: "1st Jan 2019",
-          status: "complete",
-          lorem:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem laboriosam modi reiciendis aperiam mollitia ex fugit iusto quam quasi voluptatibus non, soluta voluptatem libero in enim minima. Eum, molestias exercitationem."
-        },
-        {
-          title: "Design video thumbnails",
-          person: "Malcolm X",
-          due: "20th Dec 2018",
-          status: "complete",
-          lorem:
-            "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dignissimos totam magni facilis dolorum nostrum natus quas tenetur officia iure qui ducimus ad voluptates impedit incidunt excepturi, eum rem nobis doloremque."
-        },
-        {
-          title: "Create a community forum",
-          person: "Gandhi",
-          due: "20th Oct 2018",
-          status: "overdue",
-          lorem:
-            "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eius iure facilis eveniet possimus tempore nobis distinctio aliquam deleniti, atque obcaecati, quod iusto at laudantium quibusdam itaque cupiditate. Placeat, repellat incidunt!"
-        }
-      ]
+      projects: []
     };
   },
   methods: {
@@ -98,6 +68,20 @@ export default {
       // It consecutively performs the operation on each pair
       this.projects.sort((a, b) => (a[prop] < b[prop] ? -1 : 1));
     }
+  },
+  created() {
+    db.collection('projects').onSnapshot(response => {
+      const changes = response.docChanges();
+
+      changes.forEach(change => {
+        if (change.type === 'added') {
+          this.projects.push({
+            ...change.doc.data(),
+            id: change.doc.id
+          })
+        }
+      });
+    })
   }
 };
 </script>
